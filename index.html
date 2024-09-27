@@ -3,160 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Quiz</title>
+    <title>POP MUSIC</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #0CC0DF; /* Background color */
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 40%;
-            max-width: 800px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
-            padding: 20px;
-        }
-        img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-            cursor: pointer;
-            border: 5px solid #0CC0DF; /* Outer blue border color */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .qa-box {
-            margin-top: 20px;
+            height: 100vh;
+            background-color: transparent;
+            color: black;
             text-align: center;
         }
-        .question {
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
+
+        #quiz-container {
+            background-color: transparent;
+            padding: 20px;
+            max-width: 600px;
+            width: 100%;
         }
+
+        #logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
         .answer {
-            font-size: 1.2em;
-            color: #555;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        #next-button {
+            background-color: white;
+            color: black;
+            border: 2px solid #ff9900;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #next-button:hover {
+            background-color: #ffcc00;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fadeOut {
+            animation: fadeOut 0.5s forwards;
+        }
+
+        .fadeIn {
+            animation: fadeIn 0.5s forwards;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img id="quizImage" src="https://i.imgur.com/5iojhQQ.png" alt="Quiz Image">
-        <div class="qa-box">
-            <div id="question" class="question">Click the image to get a question!</div>
-            <div id="answer" class="answer"></div>
-        </div>
+
+<div id="quiz-container">
+    <img id="logo" src="https://i.imgur.com/cyZ0Z21.png" alt="Pop Music Logo">
+    <h1>POP MUSIC</h1>
+    <div id="question-container">
+        <div class="question" id="question">Loading question...</div>
+        <div class="answer" id="answer">Loading answer...</div>
+        <button id="next-button" onclick="nextQuestion()">Next Question</button>
     </div>
-    
-    <script>
-        const questionsAndAnswers = [
-            { question: "Who released the hit single 'Shape of You' in 2017?", answer: "Ed Sheeran" },
-            { question: "Which artist is known for the song 'Uptown Funk'?", answer: "Mark Ronson ft. Bruno Mars" },
-            { question: "What song by Lady Gaga became a massive hit in 2008?", answer: "Poker Face" },
-            { question: "Which pop singer released 'Rolling in the Deep' in 2010?", answer: "Adele" },
-            { question: "Who is the artist behind the song 'Blinding Lights'?", answer: "The Weeknd" },
-            { question: "Which artist had a hit with 'Happy' in 2013?", answer: "Pharrell Williams" },
-            { question: "What is the title of Taylor Swift's 2014 album that features the song 'Blank Space'?", answer: "1989" },
-            { question: "Which song by Dua Lipa was released in 2017 and became popular?", answer: "New Rules" },
-            { question: "Who sang 'Bad Guy' in 2019?", answer: "Billie Eilish" },
-            { question: "What song did Maroon 5 release in 2015 that featured a catchy chorus?", answer: "Sugar" },
-            { question: "Which artist is known for the song 'Wrecking Ball'?", answer: "Miley Cyrus" },
-            { question: "Who released the song 'Can't Stop the Feeling!' in 2016?", answer: "Justin Timberlake" },
-            { question: "What is the title of the hit single by Cardi B featuring Bad Bunny and J Balvin?", answer: "I Like It" },
-            { question: "Which artist's song 'Levitating' became popular in 2020?", answer: "Dua Lipa" },
-            { question: "Who is the artist behind 'Someone You Loved'?", answer: "Lewis Capaldi" },
-            { question: "Which song did Bruno Mars release in 2016 that won numerous awards?", answer: "24K Magic" },
-            { question: "What is the name of the 2018 hit song by Ariana Grande that features a famous whistle note?", answer: "No Tears Left to Cry" },
-            { question: "Who released the song 'Senorita' with Shawn Mendes?", answer: "Camila Cabello" },
-            { question: "Which artist is known for the song 'Dance Monkey'?", answer: "Tones and I" },
-            { question: "What is the title of Katy Perry's 2013 hit single?", answer: "Roar" },
-            { question: "Who sang the 2020 hit 'Watermelon Sugar'?", answer: "Harry Styles" },
-            { question: "Which song by Lizzo became popular for its upbeat tempo and empowering lyrics?", answer: "Truth Hurts" },
-            { question: "Who released the song 'Starboy' in 2016?", answer: "The Weeknd" },
-            { question: "What is the name of the 2015 hit song by Adele?", answer: "Hello" },
-            { question: "Which artist is known for the song 'Shallow' from the film 'A Star is Born'?", answer: "Lady Gaga & Bradley Cooper" },
-            { question: "Who had a hit with the song 'Bad Romance'?", answer: "Lady Gaga" },
-            { question: "What is the title of the 2019 hit by Post Malone?", answer: "Circles" },
-            { question: "Who sang 'Royals', which topped the charts in 2013?", answer: "Lorde" },
-            { question: "Which song by Sam Smith became popular for its emotional lyrics in 2014?", answer: "Stay With Me" },
-            { question: "What is the name of the 2020 hit song by The Weeknd?", answer: "Blinding Lights" },
-            { question: "Which artist is known for the song 'Can't Feel My Face'?", answer: "The Weeknd" },
-            { question: "What is the title of the 2016 hit single by Justin Bieber?", answer: "Sorry" },
-            { question: "Who released the song 'Love Yourself' in 2015?", answer: "Justin Bieber" },
-            { question: "Which artist had a hit with 'Havana' in 2017?", answer: "Camila Cabello" },
-            { question: "What is the name of the song by Rihanna featuring Eminem released in 2010?", answer: "Love The Way You Lie" },
-            { question: "Who is the artist behind the 2019 hit 'Sucker'?", answer: "Jonas Brothers" },
-            { question: "Which song by Billie Eilish became popular in 2019?", answer: "Bad Guy" },
-            { question: "What is the title of the 2017 hit by Ed Sheeran?", answer: "Shape of You" },
-            { question: "Who released 'Perfect' in 2017?", answer: "Ed Sheeran" },
-            { question: "What is the name of the 2018 hit song by Post Malone featuring 21 Savage?", answer: "Rockstar" },
-            { question: "Which artist is known for the song 'I Like It'?", answer: "Cardi B, Bad Bunny & J Balvin" },
-            { question: "Who sang 'Sorry' in 2015?", answer: "Justin Bieber" },
-            { question: "What is the title of the 2019 song by Taylor Swift that was popular?", answer: "You Need to Calm Down" },
-            { question: "Which artist is known for the song 'Dynamite' released in 2020?", answer: "BTS" },
-            { question: "What is the name of the 2014 hit song by Pharrell Williams?", answer: "Happy" },
-            { question: "Who is the artist behind the song 'Sugar'?", answer: "Maroon 5" },
-            { question: "What is the title of the 2021 hit single by Olivia Rodrigo?", answer: "Good 4 U" },
-            { question: "Which song by The Chainsmokers and Halsey became popular in 2016?", answer: "Closer" },
-            { question: "Who released 'No Tears Left to Cry' in 2018?", answer: "Ariana Grande" },
-            { question: "What is the name of the 2019 hit by Lil Nas X?", answer: "Old Town Road" },
-            { question: "Which artist is known for the song 'Happier'?", answer: "Marshmello ft. Bastille" },
-            { question: "What is the title of the 2021 hit by Ed Sheeran?", answer: "Bad Habits" },
-            { question: "Who sang 'On The Floor' in 2011?", answer: "Jennifer Lopez" },
-            { question: "What is the name of the 2017 song by Clean Bandit featuring Sean Paul and Anne-Marie?", answer: "Rockabye" },
-            { question: "Which song by Ariana Grande became popular for its upbeat tempo in 2018?", answer: "No Tears Left to Cry" },
-            { question: "Who is the artist behind 'Can't Stop The Feeling!'?", answer: "Justin Timberlake" },
-            { question: "What is the title of the 2020 hit song by Ariana Grande?", answer: "Positions" },
-            { question: "Who released 'Uptown Funk' in 2014?", answer: "Mark Ronson ft. Bruno Mars" },
-            { question: "Which artist is known for the song 'Grenade'?", answer: "Bruno Mars" },
-            { question: "What is the name of the 2018 hit song by Drake?", answer: "In My Feelings" },
-            { question: "Who sang 'Love Me Like You Do' in 2015?", answer: "Ellie Goulding" },
-            { question: "What is the title of the 2021 hit song by The Weeknd?", answer: "Save Your Tears" },
-            { question: "Which artist is known for the song 'Youngblood'?", answer: "5 Seconds of Summer" },
-            { question: "Who released 'Rockstar' in 2018?", answer: "Post Malone ft. 21 Savage" },
-            { question: "What is the name of the 2016 hit song by Justin Bieber?", answer: "What Do You Mean?" },
-            { question: "Which song by Zara Larsson became popular in 2016?", answer: "Lush Life" },
-            { question: "Who sang 'Don't Start Now' in 2019?", answer: "Dua Lipa" },
-            { question: "What is the title of the 2015 hit by Sam Smith?", answer: "Stay With Me" },
-            { question: "Which artist had a hit with 'Shut Up and Dance'?", answer: "Walk the Moon" },
-            { question: "What is the name of the 2017 hit song by Luis Fonsi and Daddy Yankee?", answer: "Despacito" },
-            { question: "Who is the artist behind '7 Years'?", answer: "Lukas Graham" },
-            { question: "What is the title of the 2020 song by Cardi B featuring Megan Thee Stallion?", answer: "WAP" },
-            { question: "Which song by Camila Cabello became popular in 2018?", answer: "Havana" },
-            { question: "Who sang 'Bang Bang' in 2014?", answer: "Jessie J, Ariana Grande & Nicki Minaj" },
-            { question: "What is the name of the 2019 hit by Billie Eilish?", answer: "Bellyache" },
-            { question: "Which artist is known for the song 'Dusk Till Dawn'?", answer: "Zayn ft. Sia" },
-            { question: "What is the title of the 2019 song by Ariana Grande that features a famous chorus?", answer: "Thank U, Next" },
-            { question: "Who sang 'Can't Stop The Feeling!' in 2016?", answer: "Justin Timberlake" },
-            { question: "What is the name of the 2021 hit by Olivia Rodrigo?", answer: "Good 4 U" },
-            { question: "Which artist is known for the song 'In My Feelings'?", answer: "Drake" },
-            { question: "What is the title of the 2016 hit by Rihanna?", answer: "Work" },
-            { question: "Who released the song 'Perfect' in 2017?", answer: "Ed Sheeran" },
-            { question: "What is the name of the 2019 hit by Jonas Brothers?", answer: "Sucker" },
-            { question: "Which artist had a hit with 'Uptown Funk' in 2014?", answer: "Mark Ronson ft. Bruno Mars" },
-            { question: "Who sang 'Someone Like You' in 2011?", answer: "Adele" }
-        ];
+</div>
 
-        document.getElementById('quizImage').addEventListener('click', function() {
-            const randomIndex = Math.floor(Math.random() * questionsAndAnswers.length);
-            const question = questionsAndAnswers[randomIndex].question;
-            const answer = questionsAndAnswers[randomIndex].answer;
+<script>
+    // Question and answers data
+    const quizData = [
+        { question: "Who released the hit single 'Shape of You' in 2017?", answer: "Ed Sheeran" },
+        { question: "Which artist is known for the song 'Uptown Funk'?", answer: "Mark Ronson ft. Bruno Mars" },
+        { question: "What song by Lady Gaga became a massive hit in 2008?", answer: "Poker Face" },
+        { question: "Which pop singer released 'Rolling in the Deep' in 2010?", answer: "Adele" },
+        { question: "Who is the artist behind the song 'Blinding Lights'?", answer: "The Weeknd" },
+        { question: "Which artist had a hit with 'Happy' in 2013?", answer: "Pharrell Williams" },
+        { question: "What is the title of Taylor Swift's 2014 album that features the song 'Blank Space'?", answer: "1989" },
+        { question: "Which song by Dua Lipa was released in 2017 and became popular?", answer: "New Rules" },
+        { question: "Who sang 'Bad Guy' in 2019?", answer: "Billie Eilish" },
+        { question: "What song did Maroon 5 release in 2015 that featured a catchy chorus?", answer: "Sugar" },
+        { question: "Which artist is known for the song 'Wrecking Ball'?", answer: "Miley Cyrus" },
+        { question: "Who released the song 'Can't Stop the Feeling!' in 2016?", answer: "Justin Timberlake" },
+        { question: "What is the title of the hit single by Cardi B featuring Bad Bunny and J Balvin?", answer: "I Like It" },
+        { question: "Which artist's song 'Levitating' became popular in 2020?", answer: "Dua Lipa" },
+        { question: "Who is the artist behind 'Someone You Loved'?", answer: "Lewis Capaldi" },
+        { question: "Which song did Bruno Mars release in 2016 that won numerous awards?", answer: "24K Magic" },
+        { question: "What is the name of the 2018 hit song by Ariana Grande that features a famous whistle note?", answer: "No Tears Left to Cry" },
+        { question: "Who released the song 'Senorita' with Shawn Mendes?", answer: "Camila Cabello" },
+        { question: "Which artist is known for the song 'Dance Monkey'?", answer: "Tones and I" },
+        { question: "What is the title of Katy Perry's 2013 hit single?", answer: "Roar" },
+        { question: "Who sang the 2020 hit 'Watermelon Sugar'?", answer: "Harry Styles" },
+        { question: "Which song by Lizzo became popular for its upbeat tempo and empowering lyrics?", answer: "Truth Hurts" },
+        { question: "Who released the song 'Starboy' in 2016?", answer: "The Weeknd" },
+        { question: "What is the name of the 2015 hit song by Adele?", answer: "Hello" },
+        { question: "Which artist is known for the song 'Shallow' from the film A Star is Born?", answer: "Lady Gaga & Bradley Cooper" },
+        { question: "Who had a hit with the song 'Bad Romance'?", answer: "Lady Gaga" },
+        { question: "What is the title of the 2019 hit by Post Malone?", answer: "Circles" },
+        { question: "Who sang 'Royals', which topped the charts in 2013?", answer: "Lorde" },
+        { question: "Which song by Sam Smith became popular for its emotional lyrics in 2014?", answer: "Stay With Me" },
+        { question: "What is the name of the 2020 hit song by The Weeknd?", answer: "Blinding Lights" },
+        { question: "Which artist is known for the song 'Can't Feel My Face'?", answer: "The Weeknd" },
+        { question: "What is the title of the 2016 hit single by Justin Bieber?", answer: "Sorry" },
+        { question: "Who released the song 'Love Yourself' in 2015?", answer: "Justin Bieber" },
+        { question: "Which artist had a hit with 'Havana' in 2017?", answer: "Camila Cabello" },
+        { question: "What is the name of the song by Rihanna featuring Eminem released in 2010?", answer: "Love The Way You Lie" },
+        { question: "Who is the artist behind the 2019 hit 'Sucker'?", answer: "Jonas Brothers" },
+        { question: "Which song by Billie Eilish became popular in 2019?", answer: "Bad Guy" },
+        { question: "What is the title of the 2017 hit by Ed Sheeran?", answer: "Shape of You" },
+        { question: "Who released 'Perfect' in 2017?", answer: "Ed Sheeran" },
+        { question: "What is the name of the 2018 hit song by Post Malone featuring 21 Savage?", answer: "Rockstar" },
+        { question: "Which artist is known for the song 'I Like It'?", answer: "Cardi B, Bad Bunny & J Balvin" },
+        { question: "Who sang 'Sorry' in 2015?", answer: "Justin Bieber" },
+        { question: "What is the title of the 2019 song by Taylor Swift that was popular?", answer: "You Need to Calm Down" },
+        { question: "Which artist is known for the song 'Dynamite' released in 2020?", answer: "BTS" },
+        { question: "What is the name of the 2014 hit song by Pharrell Williams?", answer: "Happy" },
+        { question: "Who is the artist behind the song 'Sugar'?", answer: "Maroon 5" },
+        { question: "What is the title of the 2021 hit single by Olivia Rodrigo?", answer: "Good 4 U" },
+        { question: "Which song by The Chainsmokers and Halsey became popular in 2016?", answer: "Closer" },
+        { question: "Who released 'No Tears Left to Cry' in 2018?", answer: "Ariana Grande" },
+        { question: "What is the name of the 2019 hit by Lil Nas X?", answer: "Old Town Road" },
+        { question: "Which artist is known for the song 'Happier'?", answer: "Marshmello ft. Bastille" },
+        { question: "What is the title of the 2021 hit by Ed Sheeran?", answer: "Bad Habits" },
+        { question: "Who sang 'On The Floor' in 2011?", answer: "Jennifer Lopez" },
+        { question: "What is the name of the 2017 song by Clean Bandit featuring Sean Paul and Anne-Marie?", answer: "Rockabye" },
+        { question: "Which song by Ariana Grande became popular for its upbeat tempo in 2018?", answer: "No Tears Left to Cry" },
+        { question: "Who is the artist behind 'Can't Stop The Feeling!'?", answer: "Justin Timberlake" },
+        { question: "What is the title of the 2020 hit song by Ariana Grande?", answer: "Positions" },
+        { question: "Who released 'Uptown Funk' in 2014?", answer: "Mark Ronson ft. Bruno Mars" },
+        { question: "Which artist is known for the song 'Grenade'?", answer: "Bruno Mars" },
+        { question: "What is the name of the 2018 hit song by Drake?", answer: "In My Feelings" },
+        { question: "Who sang 'Love Me Like You Do' in 2015?", answer: "Ellie Goulding" },
+        { question: "What is the title of the 2021 hit song by The Weeknd?", answer: "Save Your Tears" },
+        { question: "Which artist is known for the song 'Youngblood'?", answer: "5 Seconds of Summer" },
+        { question: "Who released 'Rockstar' in 2018?", answer: "Post Malone ft. 21 Savage" },
+        { question: "What is the name of the 2016 hit song by Justin Bieber?", answer: "What Do You Mean?" },
+        { question: "Which song by Zara Larsson became popular in 2016?", answer: "Lush Life" },
+        { question: "Who sang 'Don't Start Now' in 2019?", answer: "Dua Lipa" },
+        { question: "What is the title of the 2015 hit by Sam Smith?", answer: "Stay With Me" },
+        { question: "Which artist had a hit with 'Shut Up and Dance'?", answer: "Walk the Moon" },
+        { question: "What is the name of the 2017 hit song by Luis Fonsi and Daddy Yankee?", answer: "Despacito" },
+        { question: "Who is the artist behind '7 Years'?", answer: "Lukas Graham" },
+        { question: "What is the title of the 2020 song by Cardi B featuring Megan Thee Stallion?", answer: "WAP" },
+        { question: "Which song by Camila Cabello became popular in 2018?", answer: "Havana" },
+        { question: "Who sang 'Bang Bang' in 2014?", answer: "Jessie J, Ariana Grande & Nicki Minaj" }
+    ];
 
-            document.getElementById('question').textContent = question;
-            document.getElementById('answer').textContent = answer;
-        });
-    </script>
+    let currentQuestionIndex = 0;
+
+    // Shuffle the quiz data
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Start the quiz
+    shuffle(quizData);
+    showQuestion();
+
+    function showQuestion() {
+        const questionContainer = document.getElementById("question");
+        const answerContainer = document.getElementById("answer");
+
+        questionContainer.innerText = quizData[currentQuestionIndex].question;
+        answerContainer.innerText = "Loading answer...";
+
+        // Fade in effect
+        answerContainer.classList.remove("fadeIn");
+        answerContainer.classList.add("fadeOut");
+
+        setTimeout(() => {
+            answerContainer.innerText = quizData[currentQuestionIndex].answer;
+            answerContainer.classList.remove("fadeOut");
+            answerContainer.classList.add("fadeIn");
+        }, 500);
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizData.length) {
+            showQuestion();
+        } else {
+            const questionContainer = document.getElementById("question");
+            const answerContainer = document.getElementById("answer");
+            questionContainer.innerText = "Thank you for playing!";
+            answerContainer.innerText = "";
+            document.getElementById("next-button").style.display = "none"; // Hide the next button
+        }
+    }
+</script>
+
 </body>
 </html>
